@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMO 2026 - Result & Certificate Hub</title>
+    <!-- Tailwind CSS for Google-style clean UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printable-marksheet, #printable-marksheet * { visibility: visible; }
+            #printable-marksheet { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 100%; 
+                padding: 5mm;
+            }
+            .no-print { display: none !important; }
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-4 px-6 shadow-sm sticky top-0 z-50 no-print">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-base font-bold text-slate-900 tracking-tight">MATH OLYMPIAD 2026</h1>
+                <p class="text-[10px] font-medium text-cyan-600 uppercase tracking-widest">EVERY YOUTH MATTERS</p>
+            </div>
+            <span class="text-[11px] bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold border border-slate-200">LMO 2026</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto p-4 w-full flex-grow">
+        
+        <!-- Search Box Section -->
+        <div class="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-sm mb-5 text-center no-print">
+            <h2 class="text-sm font-bold text-slate-900 mb-1">Check Your Result & Certificate</h2>
+            <p class="text-xs text-slate-500 mb-3">Enter your unique Registration ID below</p>
+            <div class="flex gap-2 max-w-xs mx-auto">
+                <input type="text" id="regInput" placeholder="e.g. 101" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-cyan-500 w-full uppercase text-center font-bold tracking-wider">
+                <button onclick="searchResult()" class="bg-slate-900 hover:bg-slate-800 text-white font-medium px-4 py-2 rounded-xl text-sm transition-all shadow-sm">Search</button>
+            </div>
+            <div class="mt-2.5 text-[11px] text-slate-400">
+                Try IDs: <span onclick="setDemo('101')" class="text-cyan-600 font-semibold cursor-pointer underline">101</span>, <span onclick="setDemo('103')" class="text-cyan-600 font-semibold cursor-pointer underline">103</span>, <span onclick="setDemo('105')" class="text-cyan-600 font-semibold cursor-pointer underline">105</span>, <span onclick="setDemo('110')" class="text-cyan-600 font-semibold cursor-pointer underline">110</span>
+            </div>
+        </div>
+
+        <!-- Result Display Card (Hidden by default) -->
+        <div id="resultCard" class="hidden bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-md">
+            
+            <!-- Printable MarkSheet Area -->
+            <div id="printable-marksheet" class="space-y-3">
+                
+                <!-- Card Header -->
+                <div class="text-center border-b border-slate-100 pb-2">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase">Lalmohan Math Olympiad 2026</h3>
+                    <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
+                </div>
+
+                <!-- Short Performance Message Banner (Preview only) -->
+                <div id="msgBanner" class="p-2.5 rounded-xl text-xs font-medium border text-center no-print"></div>
+
+                <!-- STUDENT INFORMATION -->
+                <div>
+                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Student Information</h4>
+                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                            <span class="text-slate-500">ID No:</span>
+                            <span id="resID" class="font-bold text-slate-900"></span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                            <span class="text-slate-500">Name:</span>
+                            <span id="resName" class="font-bold text-slate-900 text-right"></span>
+                        </div>
+                        <div class="flex flex-col border-b border-slate-200/50 pb-1">
+                            <span class="text-slate-500 text-[10px]">Institute:</span>
+                            <span id="resInstitute" class="font-bold text-slate-900"></span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 border-b border-slate-200/50 pb-1">
+                            <div><span class="text-slate-500 block text-[10px]">Class:</span> <span id="resClass" class="font-bold text-slate-900"></span></div>
+                            <div><span class="text-slate-500 block text-[10px]">Section:</span> <span id="resSection" class="font-bold text-slate-900"></span></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><span class="text-slate-500 block text-[10px]">Class Roll:</span> <span id="resRoll" class="font-bold text-slate-900"></span></div>
+                            <div><span class="text-slate-500 block text-[10px]">Contact:</span> <span id="resContact" class="font-bold text-slate-900"></span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Qualifying Round Information (Including Rankings) -->
+                <div>
+                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Qualifying Round Information</h4>
+                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                            <span class="text-slate-500">Ans Sheet No:</span>
+                            <span id="resQSheet" class="font-bold text-slate-900 font-mono"></span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1 text-center py-1 bg-white rounded-lg border border-slate-200/60 my-1">
+                            <div><span class="text-[10px] text-slate-400 block">Answered</span><span id="resAnswered" class="font-bold text-slate-800"></span></div>
+                            <div><span class="text-[10px] text-slate-400 block">Correct</span><span id="resCorrect" class="font-bold text-emerald-600"></span></div>
+                            <div><span class="text-[10px] text-slate-400 block">Wrong</span><span id="resWrong" class="font-bold text-rose-600"></span></div>
+                        </div>
+                        
+                        <!-- Qualifying Rankings Added Here -->
+                        <div class="grid grid-cols-3 gap-1 text-center py-1 bg-cyan-50/50 rounded-lg border border-cyan-100 my-1">
+                            <div><span class="text-[9px] text-cyan-700 block font-medium">All Over Rank</span><span id="resAllOverRank" class="font-bold text-slate-900"></span></div>
+                            <div><span class="text-[9px] text-cyan-700 block font-medium">Institute Rank</span><span id="resInstRank" class="font-bold text-slate-900"></span></div>
+                            <div><span class="text-[9px] text-cyan-700 block font-medium">Class Rank</span><span id="resClassRank" class="font-bold text-slate-900"></span></div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-1">
+                            <div>
+                                <span class="text-slate-500 text-[10px] block">Status / Badge:</span>
+                                <span id="resStatusBadge" class="inline-flex items-center gap-1 mt-0.5 font-bold text-[11px] flex-wrap"></span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-slate-500 text-[10px] block">Q. Score (Out of 100):</span>
+                                <span id="resQScore" class="font-bold text-slate-900 text-sm"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finale Information -->
+                <div id="finaleSection">
+                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Finale Information</h4>
+                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                            <span class="text-slate-500">Finale Ans Sheet No:</span>
+                            <span id="resFSheet" class="font-bold text-slate-900 font-mono"></span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <div>
+                                <span class="text-slate-500 text-[10px] block">Title / Achievement:</span>
+                                <span id="resTitle" class="font-extrabold text-purple-600 text-xs"></span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-slate-500 text-[10px] block">Finale Score (Out of 100):</span>
+                                <span id="resFScore" class="font-extrabold text-slate-900 text-sm"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-2.5 mt-4 pt-3 border-t border-slate-100 no-print">
+                <button onclick="window.print()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                    🖨️ Print MarkSheet (A4 Fit)
+                </button>
+                <button onclick="downloadCertificate()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                    🎓 Download Participation Certificate
+                </button>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMsg" class="hidden bg-rose-50 border border-rose-200 text-rose-600 p-4 rounded-xl text-center text-xs font-medium no-print">
+            Registration ID not found! Please check your ID and try again.
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-slate-200 bg-white/50 no-print">
+        <p class="font-bold text-slate-800">EVERY YOUTH MATTERS</p>
+        <p class="text-[10px] text-slate-400">MATH OLYMPIAD 2026</p>
+    </footer>
+
+    <!-- Mock Database with Ranking Fields -->
+    <script>
+        const database = {
+            "101": {
+                ID: "101", NAME: "ABDULLAH AL RAFI", INSTITUTE: "ABC RESIDENTIAL SCHOOL", CLASS: "SSC EXAMINE", SECTION: "A", CLASSROLL: "54", CONTACT: "01715874723",
+                Q_SHEET: "6383637383", ANSWERED: "18", CORRECT: "13", WRONG: "5", SCORE: "89", ALL_OVER_RANK: "3rd", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "⭐ Best Accuracy", F_SHEET: "2293739363", F_SCORE: "70", TITLE: "CHAMPION"
+            },
+            "102": {
+                ID: "102", NAME: "TAHMID HOSSAIN", INSTITUTE: "LALMOHAN GOVT. MODEL SCHOOL", CLASS: "10", SECTION: "B", CLASSROLL: "12", CONTACT: "01811223344",
+                Q_SHEET: "6383637384", ANSWERED: "10", CORRECT: "6", WRONG: "4", SCORE: "55", ALL_OVER_RANK: "145th", INSTITUTE_RANK: "12th", CLASS_RANK: "5th", STATUS: "NOT QUALIFIED", BADGE: "🎯 Good Attempt", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
+            },
+            "103": {
+                ID: "103", NAME: "NUSRAT JAHAN", INSTITUTE: "LALMOHAN GIRLS HIGH SCHOOL", CLASS: "9", SECTION: "A", CLASSROLL: "05", CONTACT: "01911223355",
+                Q_SHEET: "6383637385", ANSWERED: "20", CORRECT: "17", WRONG: "3", SCORE: "92", ALL_OVER_RANK: "1st", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "🔥 High Scorer", F_SHEET: "2293739364", F_SCORE: "85", TITLE: "1ST RUNNER UP"
+            },
+            "104": {
+                ID: "104", NAME: "SABBIR AHMED", INSTITUTE: "HAZIRHAT SEC SCHOOL", CLASS: "8", SECTION: "C", CLASSROLL: "22", CONTACT: "01611223366",
+                Q_SHEET: "6383637386", ANSWERED: "12", CORRECT: "7", WRONG: "5", SCORE: "60", ALL_OVER_RANK: "98th", INSTITUTE_RANK: "4th", CLASS_RANK: "2nd", STATUS: "NOT QUALIFIED", BADGE: "💪 Keep Trying", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
+            },
+            "105": {
+                ID: "105", NAME: "MEHRIN ISLAM", INSTITUTE: "DHAKA RESIDENTIAL MODEL COLLEGE", CLASS: "10", SECTION: "A", CLASSROLL: "03", CONTACT: "01511223377",
+                Q_SHEET: "6383637387", ANSWERED: "19", CORRECT: "16", WRONG: "3", SCORE: "88", ALL_OVER_RANK: "5th", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "⭐ Best Accuracy", F_SHEET: "2293739365", F_SCORE: "78", TITLE: "2ND RUNNER UP"
+            },
+            "106": {
+                ID: "106", NAME: "TANVIR HOSSAIN", INSTITUTE: "FARIDPUR ZILLA SCHOOL", CLASS: "7", SECTION: "B", CLASSROLL: "15", CONTACT: "01711223388",
+                Q_SHEET: "6383637388", ANSWERED: "15", CORRECT: "9", WRONG: "6", SCORE: "68", ALL_OVER_RANK: "72nd", INSTITUTE_RANK: "8th", CLASS_RANK: "3rd", STATUS: "NOT QUALIFIED", BADGE: "🎯 Good Attempt", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
+            },
+            "107": {
+                ID: "107", NAME: "SUMAIYA AKTER", INSTITUTE: "COMILLA VICTORIA COLLEGE", CLASS: "HSC 1ST", SECTION: "SCIENCE", CLASSROLL: "08", CONTACT: "01311223399",
+                Q_SHEET: "6383637389", ANSWERED: "22", CORRECT: "18", WRONG: "4", SCORE: "94", ALL_OVER_RANK: "2nd", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "🏆 Brilliant", F_SHEET: "2293739366", F_SCORE: "90", TITLE: "CHAMPION"
+            },
+            "108": {
+                ID: "108", NAME: "RAKIBUL ISLAM", INSTITUTE: "BARISAL CADET COLLEGE", CLASS: "10", SECTION: "A", CLASSROLL: "19", CONTACT: "01411223300",
+                Q_SHEET: "6383637390", ANSWERED: "14", CORRECT: "8", WRONG: "6", SCORE: "62", ALL_OVER_RANK: "89th", INSTITUTE_RANK: "6th", CLASS_RANK: "4th", STATUS: "NOT QUALIFIED", BADGE: "💪 Keep Trying", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
+            },
+            "109": {
+                ID: "109", NAME: "FAHIM MUNTASIR", INSTITUTE: "CHITTAGONG GRAMMAR SCHOOL", CLASS: "9", SECTION: "B", CLASSROLL: "11", CONTACT: "01822334455",
+                Q_SHEET: "6383637391", ANSWERED: "21", CORRECT: "16", WRONG: "5", SCORE: "85", ALL_OVER_RANK: "10th", INSTITUTE_RANK: "2nd", CLASS_RANK: "2nd", STATUS: "QUALIFIED", BADGE: "🔥 High Scorer", F_SHEET: "2293739367", F_SCORE: "72", TITLE: "FINALIST"
+            },
+            "110": {
+                ID: "110", NAME: "ANIKA TASNIM", INSTITUTE: "VIQARUN NISSA NOON SCHOOL", CLASS: "8", SECTION: "D", CLASSROLL: "25", CONTACT: "01922334466",
+                Q_SHEET: "6383637392", ANSWERED: "11", CORRECT: "5", WRONG: "6", SCORE: "50", ALL_OVER_RANK: "210th", INSTITUTE_RANK: "25th", CLASS_RANK: "8th", STATUS: "NOT QUALIFIED", BADGE: "🎯 Good Attempt", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
+            }
+        };
+
+        function setDemo(id) {
+            document.getElementById('regInput').value = id;
+            searchResult();
+        }
+
+        function searchResult() {
+            const query = document.getElementById('regInput').value.trim();
+            const resultCard = document.getElementById('resultCard');
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (database[query]) {
+                const data = database[query];
+                resultCard.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+
+                // Populate Fields
+                document.getElementById('resID').innerText = data.ID;
+                document.getElementById('resName').innerText = data.NAME;
+                document.getElementById('resInstitute').innerText = data.INSTITUTE;
+                document.getElementById('resClass').innerText = data.CLASS;
+                document.getElementById('resSection').innerText = data.SECTION;
+                document.getElementById('resRoll').innerText = data.CLASSROLL;
+                document.getElementById('resContact').innerText = data.CONTACT;
+
+                document.getElementById('resQSheet').innerText = data.Q_SHEET;
+                document.getElementById('resAnswered').innerText = data.ANSWERED;
+                document.getElementById('resCorrect').innerText = data.CORRECT;
+                document.getElementById('resWrong').innerText = data.WRONG;
+                document.getElementById('resQScore').innerText = data.SCORE + " / 100";
+
+                // Populate Qualifying Rankings
+                document.getElementById('resAllOverRank').innerText = data.ALL_OVER_RANK;
+                document.getElementById('resInstRank').innerText = data.INSTITUTE_RANK;
+                document.getElementById('resClassRank').innerText = data.CLASS_RANK;
+
+                // Status & Badge
+                const statusBadgeEl = document.getElementById('resStatusBadge');
+                if (data.STATUS === "QUALIFIED") {
+                    statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 whitespace-nowrap">QUALIFIED</span> <span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 whitespace-nowrap">${data.BADGE}</span>`;
+                } else {
+                    statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 whitespace-nowrap">NOT QUALIFIED</span>`;
+                }
+
+                // Short Performance Message
+                const msgBanner = document.getElementById('msgBanner');
+                if (data.STATUS === "QUALIFIED") {
+                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center no-print";
+                    msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale with an impressive score.`;
+                } else {
+                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center no-print";
+                    msgBanner.innerText = `💡 Great effort! Thank you for participating. You can download your participation certificate below.`;
+                }
+
+                // Finale Info
+                const finaleSec = document.getElementById('finaleSection');
+                if (data.STATUS === "QUALIFIED") {
+                    finaleSec.style.display = "block";
+                    document.getElementById('resFSheet').innerText = data.F_SHEET;
+                    document.getElementById('resFScore').innerText = data.F_SCORE + " / 100";
+                    document.getElementById('resTitle').innerText = data.TITLE;
+                } else {
+                    finaleSec.style.display = "none";
+                }
+
+            } else {
+                resultCard.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function downloadCertificate() {
+            alert("Certificate Download: In production, this will instantly generate and download the dynamic participation certificate PDF for the student.");
+        }
+    </script>
+</body>
+</html>
