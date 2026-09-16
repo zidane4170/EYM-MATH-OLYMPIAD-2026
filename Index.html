@@ -303,4 +303,70 @@
                     const statusVal = String(data["STATUS"] || "").toUpperCase();
                     const isQualified = statusVal.includes("QUALIFIED") && !statusVal.includes("NOT");
 
-                    i
+                    if (isQualified) {
+                        statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">QUALIFIED</span>`;
+                    } else {
+                        statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">NOT QUALIFIED</span>`;
+                    }
+
+                    const msgBanner = document.getElementById('msgBanner');
+                    if (isQualified) {
+                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center";
+                        msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale.`;
+                    } else {
+                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center";
+                        msgBanner.innerText = `👏 Great effort! Thank you for participating. Download your participation certificate below.`;
+                    }
+
+                    const finaleSec = document.getElementById('finaleSection');
+                    if (isQualified) {
+                        finaleSec.style.display = "block";
+                        document.getElementById('resFSheet').innerText = data["FINAL SHEET NO"] || "N/A";
+                        document.getElementById('resFScore').innerText = data["FINAL SCORE"] || "N/A";
+                        document.getElementById('resTitle').innerText = data["POSITION"] || "FINALIST";
+                    } else {
+                        finaleSec.style.display = "none";
+                    }
+                } else {
+                    resultCard.classList.add('hidden');
+                    errorMsg.classList.remove('hidden');
+                }
+            };
+
+            script.onerror = function() {
+                delete window[callbackName];
+                if (document.body.contains(script)) document.body.removeChild(script);
+                searchBtn.innerText = "Search";
+                searchBtn.disabled = false;
+                alert("Error fetching data! Please check your Google Apps Script deployment.");
+            };
+
+            script.src = `${GOOGLE_SCRIPT_URL}?id=${encodeURIComponent(query)}&callback=${callbackName}`;
+            document.body.appendChild(script);
+        }
+
+        function openCertificateModal() {
+            if(!currentActiveStudent) return;
+            document.getElementById('certStudentName').innerText = currentActiveStudent["NAME"] || "STUDENT NAME";
+            document.getElementById('certInstitute').innerText = currentActiveStudent["INSTITUTE"] || "Institute Name";
+            document.getElementById('certModal').classList.remove('hidden');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certModal').classList.add('hidden');
+        }
+
+        function printMarksheet() {
+            document.body.className = "print-mode-marksheet";
+            window.print();
+            setTimeout(() => { document.body.className = ""; }, 500);
+        }
+
+        function printCertificate() {
+            document.body.className = "print-mode-cert";
+            window.print();
+            setTimeout(() => { document.body.className = ""; }, 500);
+        }
+    </script>
+</body>
+</html>
