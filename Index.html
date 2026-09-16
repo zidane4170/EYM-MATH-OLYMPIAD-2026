@@ -13,32 +13,47 @@
         .font-cursive { font-family: 'Great Vibes', cursive; }
 
         @media print {
-            body * { visibility: hidden !important; display: none !important; }
+            body * {
+                visibility: hidden !important;
+            }
 
+            /* Marksheet Print */
             body.print-mode-marksheet #printable-marksheet,
             body.print-mode-marksheet #printable-marksheet * {
-                visibility: visible !important; display: block !important;
+                visibility: visible !important;
             }
             body.print-mode-marksheet #printable-marksheet {
-                display: flex !important; flex-direction: column !important;
-                position: absolute !important; left: 0 !important; top: 0 !important;
-                width: 100% !important; height: 100% !important; padding: 10mm !important; box-sizing: border-box !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15mm !important;
+                box-sizing: border-box !important;
+                background: white !important;
             }
             @page { size: A4 portrait; margin: 0; }
 
+            /* Certificate Print */
             body.print-mode-cert #printable-certificate,
             body.print-mode-cert #printable-certificate * {
-                visibility: visible !important; display: block !important;
+                visibility: visible !important;
             }
             body.print-mode-cert #printable-certificate {
-                display: flex !important; flex-direction: column !important; justify-content: space-between !important;
-                position: absolute !important; left: 0 !important; top: 0 !important;
-                width: 100vw !important; height: 100vh !important; padding: 12mm !important; box-sizing: border-box !important; border: none !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 12mm !important;
+                box-sizing: border-box !important;
+                background: white !important;
             }
             body.print-mode-cert { background: white !important; }
             @page { size: A4 landscape; margin: 0; }
         }
-
+        
         .cert-card-preview {
             aspect-ratio: 1.414 / 1; width: 100%; max-width: 750px; background: #fff;
             border: 8px solid #0f172a; outline: 2px solid #cbd5e1; outline-offset: -5px;
