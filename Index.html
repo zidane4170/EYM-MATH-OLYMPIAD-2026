@@ -300,4 +300,66 @@
                 errorMsg.classList.add('hidden');
 
                 document.getElementById('resID').innerText = data.ID;
-                document.getElementById(
+                document.getElementById('resName').innerText = data.NAME;
+                document.getElementById('resInstitute').innerText = data.INSTITUTE;
+                document.getElementById('resClass').innerText = data.CLASS;
+                document.getElementById('resSection').innerText = data.SECTION;
+                document.getElementById('resRoll').innerText = data.CLASSROLL;
+                document.getElementById('resContact').innerText = data.CONTACT;
+
+                document.getElementById('resQSheet').innerText = data.Q_SHEET;
+                document.getElementById('resAnswered').innerText = data.ANSWERED;
+                document.getElementById('resCorrect').innerText = data.CORRECT;
+                document.getElementById('resWrong').innerText = data.WRONG;
+                document.getElementById('resQScore').innerText = data.SCORE + " / 100";
+
+                document.getElementById('resAllOverRank').innerText = data.ALL_OVER_RANK;
+                document.getElementById('resInstRank').innerText = data.INSTITUTE_RANK;
+                document.getElementById('resClassRank').innerText = data.CLASS_RANK;
+
+                const statusBadgeEl = document.getElementById('resStatusBadge');
+                if (data.STATUS === "QUALIFIED") {
+                    statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 whitespace-nowrap">QUALIFIED</span> <span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 whitespace-nowrap">${data.BADGE}</span>`;
+                } else {
+                    statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 whitespace-nowrap">NOT QUALIFIED</span>`;
+                }
+
+                const msgBanner = document.getElementById('msgBanner');
+                if (data.STATUS === "QUALIFIED") {
+                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center no-print";
+                    msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale with an impressive score.`;
+                } else {
+                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center no-print";
+                    msgBanner.innerText = `💡 Great effort! Thank you for participating. You can download your participation certificate below.`;
+                }
+
+                const finaleSec = document.getElementById('finaleSection');
+                if (data.STATUS === "QUALIFIED") {
+                    finaleSec.style.display = "block";
+                    document.getElementById('resFSheet').innerText = data.F_SHEET;
+                    document.getElementById('resFScore').innerText = data.F_SCORE + " / 100";
+                    document.getElementById('resTitle').innerText = data.TITLE;
+                } else {
+                    finaleSec.style.display = "none";
+                }
+
+            } else {
+                resultCard.classList.add('hidden');
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // CERTIFICATE MODULE FUNCTIONS
+        function openCertificateModal() {
+            if(!currentActiveStudent) return;
+            document.getElementById('certStudentName').innerText = currentActiveStudent.NAME;
+            document.getElementById('certInstitute').innerText = currentActiveStudent.INSTITUTE;
+            document.getElementById('certModal').classList.remove('hidden');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
