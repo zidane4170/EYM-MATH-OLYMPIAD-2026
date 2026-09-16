@@ -17,7 +17,7 @@
                 visibility: hidden !important;
             }
 
-            /* Marksheet Print */
+            ্            /* Marksheet Print (Single A4 Fit Fix) */
             body.print-mode-marksheet #printable-marksheet,
             body.print-mode-marksheet #printable-marksheet * {
                 visibility: visible !important;
@@ -27,12 +27,16 @@
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
+                max-height: 100vh !important;
                 margin: 0 !important;
-                padding: 15mm !important;
+                padding: 10mm !important;
                 box-sizing: border-box !important;
                 background: white !important;
+                transform: scale(0.92);
+                transform-origin: top center;
             }
             @page { size: A4 portrait; margin: 0; }
+            
 
             /* Certificate Print */
             body.print-mode-cert #printable-certificate,
