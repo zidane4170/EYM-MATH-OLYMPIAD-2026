@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EYM MO26 - Result & Certificate Portal</title>
+    <title>EYM MO26 - Result Portal</title>
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Great+Vibes&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        .font-serif-title { font-family: 'Cinzel', serif; }
-        .font-cursive { font-family: 'Great Vibes', cursive; }
-
         @media print {
             body * { visibility: hidden !important; }
 
@@ -32,31 +29,6 @@
                 transform-origin: top center;
             }
             @page { size: A4 portrait; margin: 0; }
-
-            body.print-mode-cert #printable-certificate,
-            body.print-mode-cert #printable-certificate * {
-                visibility: visible !important;
-            }
-            body.print-mode-cert #printable-certificate {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                padding: 12mm !important;
-                box-sizing: border-box !important;
-                border: none !important;
-                background: #ffffff !important;
-            }
-            body.print-mode-cert { background: white !important; }
-            @page { size: A4 landscape; margin: 0; }
-        }
-
-        .cert-card-preview {
-            aspect-ratio: 1.414 / 1; width: 100%; max-width: 750px; background: #fff;
-            border: 8px solid #0f172a; outline: 2px solid #cbd5e1; outline-offset: -5px;
-            padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;
-            justify-content: space-between; margin: 0 auto;
         }
     </style>
 </head>
@@ -81,7 +53,7 @@
         
         <!-- Search Box -->
         <div class="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-sm mb-5 text-center">
-            <h2 class="text-sm font-bold text-slate-900 mb-1">Check Your Result & Certificate</h2>
+            <h2 class="text-sm font-bold text-slate-900 mb-1">Check Your Result</h2>
             <p class="text-xs text-slate-500 mb-3">Enter your Registration ID below</p>
             <div class="flex gap-2 max-w-xs mx-auto">
                 <input type="text" id="regInput" placeholder="e.g. 2026007001" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-cyan-500 w-full uppercase text-center font-bold tracking-wider">
@@ -178,12 +150,9 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2.5 mt-4 pt-3 border-t border-slate-100">
+            <div class="mt-4 pt-3 border-t border-slate-100">
                 <button onclick="printMarksheet()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
                     🖨️ Print MarkSheet (A4 Fit)
-                </button>
-                <button onclick="openCertificateModal()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                    📜 View & Download Certificate
                 </button>
             </div>
         </div>
@@ -194,66 +163,6 @@
         </div>
 
     </main>
-
-    <!-- Certificate Modal (শুধু নাম পরিবর্তনশীল, বাকি সব ডিফল্ট টেক্সট) -->
-    <div id="certModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-2 sm:p-4 flex items-center justify-center">
-        <div class="bg-white rounded-2xl max-w-3xl w-full p-4 relative text-center my-auto">
-            <button onclick="closeCertificateModal()" class="absolute top-2 right-3 text-slate-500 hover:text-black font-bold text-2xl z-10">&times;</button>
-            
-            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Certificate Live Preview</p>
-
-            <div class="w-full overflow-x-auto">
-                <div id="printable-certificate" class="cert-card-preview">
-                    <div class="flex justify-center mb-1">
-                        <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" alt="Logo" class="w-12 h-12 object-contain">
-                    </div>
-                    <div>
-                        <h2 class="text-lg sm:text-xl font-bold font-serif-title tracking-wider uppercase text-slate-900">CERTIFICATE OF PARTICIPATION</h2>
-                        <p class="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-0.5">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</p>
-                    </div>
-                    
-                    <p class="text-xs text-slate-600 italic mt-3">This certificate is proudly presented to</p>
-
-                    <!-- শুধু নাম শো হবে -->
-                    <div>
-                        <h3 id="certStudentName" class="text-xl sm:text-3xl font-bold font-cursive text-cyan-800 border-b border-slate-300 pb-0.5 inline-block px-6 my-2">STUDENT NAME</h3>
-                    </div>
-
-                    <!-- সম্পূর্ণ ডিফল্ট ফিক্সড বার্তা -->
-                    <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed mt-1">
-                        Thank you for your active participation and valuable performance in the <strong>EYM Math Olympiad 2026</strong>. We appreciate your dedication and wish you great success in your future endeavors!
-                    </p>
-
-                    <div class="flex justify-between items-end mt-6 px-4">
-                        <div class="text-center w-32">
-                            <div class="h-8 flex items-center justify-center mb-1">
-                                <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" class="max-h-full max-w-full opacity-80" alt="Sig 1">
-                            </div>
-                            <div class="border-t border-slate-800 pt-1">
-                                <p class="text-[9px] font-bold text-slate-900 uppercase">Convener</p>
-                                <p class="text-[7px] text-slate-500">EYM MO26</p>
-                            </div>
-                        </div>
-
-                        <div class="text-center w-32">
-                            <div class="h-8 flex items-center justify-center mb-1">
-                                <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" class="max-h-full max-w-full opacity-80" alt="Sig 2">
-                            </div>
-                            <div class="border-t border-slate-800 pt-1">
-                                <p class="text-[9px] font-bold text-slate-900 uppercase">Director of Exam</p>
-                                <p class="text-[7px] text-slate-500">EYM MO26</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex gap-2 justify-center mt-4">
-                <button onclick="printCertificate()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-md">Print Certificate (A4 Landscape)</button>
-                <button onclick="closeCertificateModal()" class="bg-slate-200 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold">Close</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-slate-200 bg-white/50">
@@ -266,11 +175,8 @@
         </div>
     </footer>
 
-
-        <script>
+    <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_X6X87AI5ihmPBhFPcc5elOTewL7SfBf3jRkuz-F4s7E1rCc6sVTwTTPjpU8BASscYA/exec";
-
-        let currentActiveStudent = null;
 
         function getSheetValue(data, possibleKeys, defaultValue = 'N/A') {
             for (let key of possibleKeys) {
@@ -306,7 +212,6 @@
                     searchBtn.disabled = false;
 
                     if (data && (data.ID || data.id) && !data.error) {
-                        currentActiveStudent = data;
                         resultCard.classList.remove('hidden');
                         errorMsg.classList.add('hidden');
 
@@ -360,30 +265,11 @@
                 });
         }
 
-        function openCertificateModal() {
-            if(!currentActiveStudent) return;
-            // শুধুমাত্র ছাত্র/ছাত্রীর নাম সার্টিফিকেটটিতে বসানো হচ্ছে
-            document.getElementById('certStudentName').innerText = getSheetValue(currentActiveStudent, ["NAME", "Name", "Student Name"], "STUDENT NAME");
-            document.getElementById('certModal').classList.remove('hidden');
-        }
-
-        function closeCertificateModal() {
-            document.getElementById('certModal').classList.add('hidden');
-        }
-
         function printMarksheet() {
             document.body.classList.add("print-mode-marksheet");
             window.print();
             setTimeout(() => { document.body.classList.remove("print-mode-marksheet"); }, 1000);
         }
-
-        function printCertificate() {
-            document.body.classList.add("print-mode-cert");
-            window.print();
-            setTimeout(() => { document.body.classList.remove("print-mode-cert"); }, 1000);
-        }
     </script>
 </body>
 </html>
-
-    
