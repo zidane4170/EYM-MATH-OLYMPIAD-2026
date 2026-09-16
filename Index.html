@@ -195,7 +195,7 @@
 
     </main>
 
-    <!-- Certificate Modal -->
+    <!-- Certificate Modal (শুধু নাম পরিবর্তনশীল, বাকি সব ডিফল্ট টেক্সট) -->
     <div id="certModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 overflow-y-auto p-2 sm:p-4 flex items-center justify-center">
         <div class="bg-white rounded-2xl max-w-3xl w-full p-4 relative text-center my-auto">
             <button onclick="closeCertificateModal()" class="absolute top-2 right-3 text-slate-500 hover:text-black font-bold text-2xl z-10">&times;</button>
@@ -211,15 +211,20 @@
                         <h2 class="text-lg sm:text-xl font-bold font-serif-title tracking-wider uppercase text-slate-900">CERTIFICATE OF PARTICIPATION</h2>
                         <p class="text-[9px] sm:text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-0.5">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</p>
                     </div>
-                    <p class="text-xs text-slate-600 italic mt-2">This is proudly presented to</p>
+                    
+                    <p class="text-xs text-slate-600 italic mt-3">This certificate is proudly presented to</p>
+
+                    <!-- শুধু নাম শো হবে -->
                     <div>
-                        <h3 id="certStudentName" class="text-xl sm:text-3xl font-bold font-cursive text-cyan-800 border-b border-slate-300 pb-0.5 inline-block px-6">STUDENT NAME</h3>
+                        <h3 id="certStudentName" class="text-xl sm:text-3xl font-bold font-cursive text-cyan-800 border-b border-slate-300 pb-0.5 inline-block px-6 my-2">STUDENT NAME</h3>
                     </div>
+
+                    <!-- সম্পূর্ণ ডিফল্ট ফিক্সড বার্তা -->
                     <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed mt-1">
-                        from <strong id="certInstitute" class="text-slate-800">Institute Name</strong> for successfully participating in the <strong>Qualify Round</strong> of EYM MO26.
+                        Thank you for your active participation and valuable performance in the <strong>EYM Math Olympiad 2026</strong>. We appreciate your dedication and wish you great success in your future endeavors!
                     </p>
 
-                    <div class="flex justify-between items-end mt-4 px-4">
+                    <div class="flex justify-between items-end mt-6 px-4">
                         <div class="text-center w-32">
                             <div class="h-8 flex items-center justify-center mb-1">
                                 <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" class="max-h-full max-w-full opacity-80" alt="Sig 1">
@@ -261,10 +266,27 @@
         </div>
     </footer>
 
-    <script>
+
+        <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_X6X87AI5ihmPBhFPcc5elOTewL7SfBf3jRkuz-F4s7E1rCc6sVTwTTPjpU8BASscYA/exec";
 
         let currentActiveStudent = null;
+
+        function getSheetValue(data, possibleKeys, defaultValue = 'N/A') {
+            for (let key of possibleKeys) {
+                if (data[key] !== undefined && data[key] !== null && String(data[key]).trim() !== "") {
+                    return data[key];
+                }
+            }
+            const dataKeys = Object.keys(data);
+            for (let key of possibleKeys) {
+                const matchedKey = dataKeys.find(k => k.trim().toLowerCase() === key.trim().toLowerCase());
+                if (matchedKey && data[matchedKey] !== undefined && data[matchedKey] !== null && String(data[matchedKey]).trim() !== "") {
+                    return data[matchedKey];
+                }
+            }
+            return defaultValue;
+        }
 
         function searchResult() {
             const query = document.getElementById('regInput').value.trim();
@@ -272,85 +294,76 @@
             const errorMsg = document.getElementById('errorMsg');
             const searchBtn = document.getElementById('searchBtn');
 
-            if(!query) return;
+            if (!query) return;
 
             searchBtn.innerText = "Searching...";
             searchBtn.disabled = true;
 
-            const script = document.createElement('script');
-            const callbackName = 'handleAppsScriptResponse_' + Math.round(Math.random() * 100000);
-            
-            window[callbackName] = function(data) {
-                delete window[callbackName];
-                if (document.body.contains(script)) document.body.removeChild(script);
-                searchBtn.innerText = "Search";
-                searchBtn.disabled = false;
+            fetch(`${GOOGLE_SCRIPT_URL}?id=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    searchBtn.innerText = "Search";
+                    searchBtn.disabled = false;
 
-                if (data && data.ID && !data.error) {
-                    currentActiveStudent = data;
-                    resultCard.classList.remove('hidden');
-                    errorMsg.classList.add('hidden');
+                    if (data && (data.ID || data.id) && !data.error) {
+                        currentActiveStudent = data;
+                        resultCard.classList.remove('hidden');
+                        errorMsg.classList.add('hidden');
 
-                    document.getElementById('resID').innerText = data["ID"] || 'N/A';
-                    document.getElementById('resName').innerText = data["NAME"] || 'N/A';
-                    document.getElementById('resInstitute').innerText = data["INSTITUTE"] || 'N/A';
-                    document.getElementById('resClass').innerText = data["CLASS"] || 'N/A';
-                    document.getElementById('resSection').innerText = data["SECTION"] || 'N/A';
-                    document.getElementById('resRoll').innerText = data["ROLL"] || 'N/A';
-                    document.getElementById('resContact').innerText = data["CONTACT"] || 'N/A';
+                        document.getElementById('resID').innerText = getSheetValue(data, ["ID", "id"]);
+                        document.getElementById('resName').innerText = getSheetValue(data, ["NAME", "Name", "Student Name"]);
+                        document.getElementById('resInstitute').innerText = getSheetValue(data, ["INSTITUTE", "Institute", "School"]);
+                        document.getElementById('resClass').innerText = getSheetValue(data, ["CLASS", "Class"]);
+                        document.getElementById('resSection').innerText = getSheetValue(data, ["SECTION", "Section"]);
+                        document.getElementById('resRoll').innerText = getSheetValue(data, ["ROLL", "Roll"]);
+                        document.getElementById('resContact').innerText = getSheetValue(data, ["CONTACT", "Contact", "Phone"]);
 
-                    document.getElementById('resQSheet').innerText = data["Q ANS SHEET"] || 'N/A';
-                    document.getElementById('resAnswered').innerText = data["ANSWERED"] || '0';
-                    document.getElementById('resCorrect').innerText = data["CORRECT"] || '0';
-                    document.getElementById('resWrong').innerText = data["WRONG"] || '0';
-                    document.getElementById('resAccuracy').innerText = data["ACCURACY"] || '0%';
-                    document.getElementById('resQScore').innerText = data["SCORE"] || '0';
+                        document.getElementById('resQSheet').innerText = getSheetValue(data, ["Q ANS SHEET", "QANS SHEET", "Q_SHEET"]);
+                        document.getElementById('resAnswered').innerText = getSheetValue(data, ["ANSWERED", "Answered"], '0');
+                        document.getElementById('resCorrect').innerText = getSheetValue(data, ["CORRECT", "Correct"], '0');
+                        document.getElementById('resWrong').innerText = getSheetValue(data, ["WRONG", "Wrong"], '0');
+                        document.getElementById('resAccuracy').innerText = getSheetValue(data, ["ACCURACY", "Accuracy"], '0%');
+                        document.getElementById('resQScore').innerText = getSheetValue(data, ["SCORE", "Q SCORE", "Score"], '0');
 
-                    document.getElementById('resAllOverRank').innerText = data["ALL OVER RANK"] || 'N/A';
-                    document.getElementById('resInstRank').innerText = data["INSTITUTE RANKING"] || 'N/A';
-                    document.getElementById('resClassRank').innerText = data["CLASS RANKING"] || 'N/A';
+                        document.getElementById('resAllOverRank').innerText = getSheetValue(data, ["OVER RAN", "ALL OVER RANK", "OVERALL RANK"]);
+                        document.getElementById('resInstRank').innerText = getSheetValue(data, ["INSTITUTE RAN", "INSTITUTE RANKING", "INSTITUTE RANK"]);
+                        document.getElementById('resClassRank').innerText = getSheetValue(data, ["CLASS RANKIN", "CLASS RANKING", "CLASS RANK"]);
 
-                    const statusBadgeEl = document.getElementById('resStatusBadge');
-                    const statusVal = String(data["STATUS"] || "").toUpperCase();
-                    const isQualified = statusVal.includes("QUALIFIED") && !statusVal.includes("NOT");
+                        const statusBadgeEl = document.getElementById('resStatusBadge');
+                        const statusVal = String(getSheetValue(data, ["STATUS", "Status"], "")).toUpperCase();
+                        const isQualified = statusVal.includes("QUALIFIED") && !statusVal.includes("NOT");
 
-                    if (isQualified) {
-                        statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">QUALIFIED</span>`;
+                        if (isQualified) {
+                            statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">QUALIFIED</span>`;
+                        } else {
+                            statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">NOT QUALIFIED</span>`;
+                        }
+
+                        const finaleSec = document.getElementById('finaleSection');
+                        if (isQualified) {
+                            finaleSec.style.display = "block";
+                            document.getElementById('resFSheet').innerText = getSheetValue(data, ["FINAL SHEET N", "FINAL SHEET NO", "FINAL SHEET"]);
+                            document.getElementById('resFScore').innerText = getSheetValue(data, ["FINAL SCORE", "FINAL_SCORE"]);
+                            document.getElementById('resTitle').innerText = getSheetValue(data, ["POSITION", "Title", "TITLE", "ACHIEVEMENT", "Title / Achievement", "AWARD"]);
+                        } else {
+                            finaleSec.style.display = "none";
+                        }
                     } else {
-                        statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">NOT QUALIFIED</span>`;
+                        resultCard.classList.add('hidden');
+                        errorMsg.classList.remove('hidden');
                     }
-
-                    const finaleSec = document.getElementById('finaleSection');
-                    if (isQualified) {
-                        finaleSec.style.display = "block";
-                        document.getElementById('resFSheet').innerText = data["FINAL SHEET NO"] || "N/A";
-                        document.getElementById('resFScore').innerText = data["FINAL SCORE"] || "N/A";
-                        document.getElementById('resTitle').innerText = data["POSITION"] || "FINALIST";
-                    } else {
-                        finaleSec.style.display = "none";
-                    }
-                } else {
-                    resultCard.classList.add('hidden');
-                    errorMsg.classList.remove('hidden');
-                }
-            };
-
-            script.onerror = function() {
-                delete window[callbackName];
-                if (document.body.contains(script)) document.body.removeChild(script);
-                searchBtn.innerText = "Search";
-                searchBtn.disabled = false;
-                alert("Error fetching data! Please check your Google Apps Script deployment.");
-            };
-
-            script.src = `${GOOGLE_SCRIPT_URL}?id=${encodeURIComponent(query)}&callback=${callbackName}`;
-            document.body.appendChild(script);
+                })
+                .catch(err => {
+                    searchBtn.innerText = "Search";
+                    searchBtn.disabled = false;
+                    alert("Error fetching data! Please check your connection.");
+                });
         }
 
         function openCertificateModal() {
             if(!currentActiveStudent) return;
-            document.getElementById('certStudentName').innerText = currentActiveStudent["NAME"] || "STUDENT NAME";
-            document.getElementById('certInstitute').innerText = currentActiveStudent["INSTITUTE"] || "Institute Name";
+            // শুধুমাত্র ছাত্র/ছাত্রীর নাম সার্টিফিকেটটিতে বসানো হচ্ছে
+            document.getElementById('certStudentName').innerText = getSheetValue(currentActiveStudent, ["NAME", "Name", "Student Name"], "STUDENT NAME");
             document.getElementById('certModal').classList.remove('hidden');
         }
 
@@ -373,4 +386,4 @@
 </body>
 </html>
 
-             
+    
