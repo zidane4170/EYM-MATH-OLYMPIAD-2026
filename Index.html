@@ -3,38 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMO 2026 - Result & Certificate Hub</title>
+    <title>EYM MO26 - Result & Certificate Hub</title>
+    <!-- Website Icon (Favicon) -->
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2">
     <!-- Tailwind CSS for Google-style clean UI -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         @media print {
             body * { visibility: hidden; }
-            #printable-marksheet, #printable-marksheet * { visibility: visible; }
-            #printable-marksheet { 
+            .printable-area, .printable-area * { visibility: visible; }
+            .printable-area { 
                 position: absolute; 
                 left: 0; 
                 top: 0; 
                 width: 100%; 
-                padding: 5mm;
             }
             .no-print { display: none !important; }
             @page {
-                size: A4;
-                margin: 10mm;
+                size: A4 portrait;
+                margin: 0;
             }
         }
+        
+        .certificate-border {
+            border: 10px solid #0f172a;
+            outline: 2px solid #cbd5e1;
+            outline-offset: -6px;
+        }
+        
+        .font-serif-title { font-family: 'Cinzel', serif; }
+        .font-cursive { font-family: 'Great Vibes', cursive; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
 
     <!-- Header -->
-    <header class="bg-white border-b border-slate-200 py-4 px-6 shadow-sm sticky top-0 z-50 no-print">
+    <header class="bg-white border-b border-slate-200 py-3 px-6 shadow-sm sticky top-0 z-50 no-print">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-base font-bold text-slate-900 tracking-tight">MATH OLYMPIAD 2026</h1>
-                <p class="text-[10px] font-medium text-cyan-600 uppercase tracking-widest">EVERY YOUTH MATTERS</p>
+            <div class="flex items-center gap-3">
+                <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" alt="EYMO Logo" class="w-10 h-10 object-contain">
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900 tracking-tight">EVERY YOUTH MATTERS</h1>
+                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">MATH OLYMPIAD 2026</p>
+                </div>
             </div>
-            <span class="text-[11px] bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-semibold border border-slate-200">LMO 2026</span>
+            <span class="text-[11px] bg-slate-900 text-white px-2.5 py-1 rounded-full font-extrabold border border-slate-800 tracking-wider">EYM MO26</span>
         </div>
     </header>
 
@@ -54,19 +69,19 @@
             </div>
         </div>
 
-        <!-- Result Display Card (Hidden by default) -->
+        <!-- Result Display Card -->
         <div id="resultCard" class="hidden bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-md">
             
             <!-- Printable MarkSheet Area -->
-            <div id="printable-marksheet" class="space-y-3">
+            <div id="printable-marksheet" class="space-y-3 printable-area">
                 
                 <!-- Card Header -->
                 <div class="text-center border-b border-slate-100 pb-2">
-                    <h3 class="text-sm font-bold text-slate-900 uppercase">Lalmohan Math Olympiad 2026</h3>
+                    <h3 class="text-sm font-bold text-slate-900 uppercase">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</h3>
                     <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
                 </div>
 
-                <!-- Short Performance Message Banner (Preview only) -->
+                <!-- Short Performance Message Banner -->
                 <div id="msgBanner" class="p-2.5 rounded-xl text-xs font-medium border text-center no-print"></div>
 
                 <!-- STUDENT INFORMATION -->
@@ -96,7 +111,7 @@
                     </div>
                 </div>
 
-                <!-- Qualifying Round Information (Including Rankings) -->
+                <!-- Qualifying Round Information -->
                 <div>
                     <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Qualifying Round Information</h4>
                     <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
@@ -110,7 +125,6 @@
                             <div><span class="text-[10px] text-slate-400 block">Wrong</span><span id="resWrong" class="font-bold text-rose-600"></span></div>
                         </div>
                         
-                        <!-- Qualifying Rankings Added Here -->
                         <div class="grid grid-cols-3 gap-1 text-center py-1 bg-cyan-50/50 rounded-lg border border-cyan-100 my-1">
                             <div><span class="text-[9px] text-cyan-700 block font-medium">All Over Rank</span><span id="resAllOverRank" class="font-bold text-slate-900"></span></div>
                             <div><span class="text-[9px] text-cyan-700 block font-medium">Institute Rank</span><span id="resInstRank" class="font-bold text-slate-900"></span></div>
@@ -156,10 +170,10 @@
             <!-- Action Buttons -->
             <div class="flex flex-col gap-2.5 mt-4 pt-3 border-t border-slate-100 no-print">
                 <button onclick="window.print()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                    🖨️ Download MarkSheet
+                    🖨️ Print MarkSheet (A4 Fit)
                 </button>
-                <button onclick="downloadCertificate()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                    🎓 Download Participation Certificate
+                <button onclick="openCertificateModal()" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                    🎓 View & Download Certificate
                 </button>
             </div>
         </div>
@@ -171,13 +185,73 @@
 
     </main>
 
+    <!-- CERTIFICATE MODAL / VIEW AREA -->
+    <div id="certModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-4 relative text-center">
+            <button onclick="closeCertificateModal()" class="absolute top-3 right-3 text-slate-500 hover:text-black font-bold text-xl no-print">&times;</button>
+            
+            <!-- Dynamic Certificate Printable Area -->
+            <div id="printable-certificate" class="certificate-border bg-white p-8 rounded-lg relative my-2 text-slate-900 printable-area">
+                <div class="flex justify-center mb-2">
+                    <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" alt="Logo" class="w-16 h-16 object-contain">
+                </div>
+                
+                <h2 class="text-xl font-bold font-serif-title tracking-wider uppercase text-slate-900">CERTIFICATE OF PARTICIPATION</h2>
+                <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-1">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</p>
+                
+                <p class="text-xs text-slate-600 mt-6 italic">This is proudly presented to</p>
+                
+                <!-- Student Dynamic Name -->
+                <h3 id="certStudentName" class="text-2xl font-bold font-cursive text-cyan-800 my-2 border-b border-slate-300 pb-1 inline-block px-8">NAME HERE</h3>
+                
+                <p class="text-xs text-slate-600 max-w-md mx-auto leading-relaxed mt-2">
+                    from <strong id="certInstitute" class="text-slate-800">Institute Name</strong> for successfully participating in the <strong>Qualify Round</strong> of EYM MO26.
+                </p>
+
+                <!-- Double Signatures with Logo Placeholders -->
+                <div class="flex justify-between items-end mt-12 px-6">
+                    <!-- Signature 1 -->
+                    <div class="text-center w-36">
+                        <div class="h-10 flex items-center justify-center mb-1">
+                            <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" class="max-h-full max-w-full opacity-80" alt="Sig 1">
+                        </div>
+                        <div class="border-t border-slate-800 pt-1">
+                            <p class="text-[10px] font-bold text-slate-900 uppercase">Convener</p>
+                            <p class="text-[8px] text-slate-500">EYM MO26</p>
+                        </div>
+                    </div>
+
+                    <!-- Signature 2 -->
+                    <div class="text-center w-36">
+                        <div class="h-10 flex items-center justify-center mb-1">
+                            <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" class="max-h-full max-w-full opacity-80" alt="Sig 2">
+                        </div>
+                        <div class="border-t border-slate-800 pt-1">
+                            <p class="text-[10px] font-bold text-slate-900 uppercase">Director of Exam</p>
+                            <p class="text-[8px] text-slate-500">EYM MO26</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 justify-center mt-4 no-print">
+                <button onclick="window.print()" class="bg-slate-900 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-md">Print Certificate</button>
+                <button onclick="closeCertificateModal()" class="bg-slate-200 text-slate-700 px-5 py-2 rounded-xl text-xs font-bold">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center py-4 text-[11px] text-slate-500 border-t border-slate-200 bg-white/50 no-print">
         <p class="font-bold text-slate-800">EVERY YOUTH MATTERS</p>
-        <p class="text-[10px] text-slate-400">MATH OLYMPIAD 2026</p>
+        <p class="text-[10px] text-slate-500">MATH OLYMPIAD 2026 (EYM MO26)</p>
+        <div class="mt-1 flex justify-center gap-3 text-[10px] font-semibold text-cyan-700">
+            <a href="mailto:hello.eyms@gmail.com" class="hover:underline">hello.eyms@gmail.com</a>
+            <span>•</span>
+            <a href="tel:01715874723" class="hover:underline">01715874723</a>
+        </div>
     </footer>
 
-    <!-- Mock Database with Ranking Fields -->
     <script>
         const database = {
             "101": {
@@ -200,27 +274,13 @@
                 ID: "105", NAME: "MEHRIN ISLAM", INSTITUTE: "DHAKA RESIDENTIAL MODEL COLLEGE", CLASS: "10", SECTION: "A", CLASSROLL: "03", CONTACT: "01511223377",
                 Q_SHEET: "6383637387", ANSWERED: "19", CORRECT: "16", WRONG: "3", SCORE: "88", ALL_OVER_RANK: "5th", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "⭐ Best Accuracy", F_SHEET: "2293739365", F_SCORE: "78", TITLE: "2ND RUNNER UP"
             },
-            "106": {
-                ID: "106", NAME: "TANVIR HOSSAIN", INSTITUTE: "FARIDPUR ZILLA SCHOOL", CLASS: "7", SECTION: "B", CLASSROLL: "15", CONTACT: "01711223388",
-                Q_SHEET: "6383637388", ANSWERED: "15", CORRECT: "9", WRONG: "6", SCORE: "68", ALL_OVER_RANK: "72nd", INSTITUTE_RANK: "8th", CLASS_RANK: "3rd", STATUS: "NOT QUALIFIED", BADGE: "🎯 Good Attempt", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
-            },
-            "107": {
-                ID: "107", NAME: "SUMAIYA AKTER", INSTITUTE: "COMILLA VICTORIA COLLEGE", CLASS: "HSC 1ST", SECTION: "SCIENCE", CLASSROLL: "08", CONTACT: "01311223399",
-                Q_SHEET: "6383637389", ANSWERED: "22", CORRECT: "18", WRONG: "4", SCORE: "94", ALL_OVER_RANK: "2nd", INSTITUTE_RANK: "1st", CLASS_RANK: "1st", STATUS: "QUALIFIED", BADGE: "🏆 Brilliant", F_SHEET: "2293739366", F_SCORE: "90", TITLE: "CHAMPION"
-            },
-            "108": {
-                ID: "108", NAME: "RAKIBUL ISLAM", INSTITUTE: "BARISAL CADET COLLEGE", CLASS: "10", SECTION: "A", CLASSROLL: "19", CONTACT: "01411223300",
-                Q_SHEET: "6383637390", ANSWERED: "14", CORRECT: "8", WRONG: "6", SCORE: "62", ALL_OVER_RANK: "89th", INSTITUTE_RANK: "6th", CLASS_RANK: "4th", STATUS: "NOT QUALIFIED", BADGE: "💪 Keep Trying", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
-            },
-            "109": {
-                ID: "109", NAME: "FAHIM MUNTASIR", INSTITUTE: "CHITTAGONG GRAMMAR SCHOOL", CLASS: "9", SECTION: "B", CLASSROLL: "11", CONTACT: "01822334455",
-                Q_SHEET: "6383637391", ANSWERED: "21", CORRECT: "16", WRONG: "5", SCORE: "85", ALL_OVER_RANK: "10th", INSTITUTE_RANK: "2nd", CLASS_RANK: "2nd", STATUS: "QUALIFIED", BADGE: "🔥 High Scorer", F_SHEET: "2293739367", F_SCORE: "72", TITLE: "FINALIST"
-            },
             "110": {
                 ID: "110", NAME: "ANIKA TASNIM", INSTITUTE: "VIQARUN NISSA NOON SCHOOL", CLASS: "8", SECTION: "D", CLASSROLL: "25", CONTACT: "01922334466",
                 Q_SHEET: "6383637392", ANSWERED: "11", CORRECT: "5", WRONG: "6", SCORE: "50", ALL_OVER_RANK: "210th", INSTITUTE_RANK: "25th", CLASS_RANK: "8th", STATUS: "NOT QUALIFIED", BADGE: "🎯 Good Attempt", F_SHEET: "N/A", F_SCORE: "N/A", TITLE: "PARTICIPANT"
             }
         };
+
+        let currentActiveStudent = null;
 
         function setDemo(id) {
             document.getElementById('regInput').value = id;
@@ -234,67 +294,10 @@
 
             if (database[query]) {
                 const data = database[query];
+                currentActiveStudent = data;
+                
                 resultCard.classList.remove('hidden');
                 errorMsg.classList.add('hidden');
 
-                // Populate Fields
                 document.getElementById('resID').innerText = data.ID;
-                document.getElementById('resName').innerText = data.NAME;
-                document.getElementById('resInstitute').innerText = data.INSTITUTE;
-                document.getElementById('resClass').innerText = data.CLASS;
-                document.getElementById('resSection').innerText = data.SECTION;
-                document.getElementById('resRoll').innerText = data.CLASSROLL;
-                document.getElementById('resContact').innerText = data.CONTACT;
-
-                document.getElementById('resQSheet').innerText = data.Q_SHEET;
-                document.getElementById('resAnswered').innerText = data.ANSWERED;
-                document.getElementById('resCorrect').innerText = data.CORRECT;
-                document.getElementById('resWrong').innerText = data.WRONG;
-                document.getElementById('resQScore').innerText = data.SCORE + " / 100";
-
-                // Populate Qualifying Rankings
-                document.getElementById('resAllOverRank').innerText = data.ALL_OVER_RANK;
-                document.getElementById('resInstRank').innerText = data.INSTITUTE_RANK;
-                document.getElementById('resClassRank').innerText = data.CLASS_RANK;
-
-                // Status & Badge
-                const statusBadgeEl = document.getElementById('resStatusBadge');
-                if (data.STATUS === "QUALIFIED") {
-                    statusBadgeEl.innerHTML = `<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 whitespace-nowrap">QUALIFIED</span> <span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 whitespace-nowrap">${data.BADGE}</span>`;
-                } else {
-                    statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 whitespace-nowrap">NOT QUALIFIED</span>`;
-                }
-
-                // Short Performance Message
-                const msgBanner = document.getElementById('msgBanner');
-                if (data.STATUS === "QUALIFIED") {
-                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center no-print";
-                    msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale with an impressive score.`;
-                } else {
-                    msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center no-print";
-                    msgBanner.innerText = `💡 Great effort! Thank you for participating. You can download your participation certificate below.`;
-                }
-
-                // Finale Info
-                const finaleSec = document.getElementById('finaleSection');
-                if (data.STATUS === "QUALIFIED") {
-                    finaleSec.style.display = "block";
-                    document.getElementById('resFSheet').innerText = data.F_SHEET;
-                    document.getElementById('resFScore').innerText = data.F_SCORE + " / 100";
-                    document.getElementById('resTitle').innerText = data.TITLE;
-                } else {
-                    finaleSec.style.display = "none";
-                }
-
-            } else {
-                resultCard.classList.add('hidden');
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        function downloadCertificate() {
-            alert("Certificate Download: In production, this will instantly generate and download the dynamic participation certificate PDF for the student.");
-        }
-    </script>
-</body>
-</html>
+                document.getElementById(
