@@ -13,11 +13,8 @@
         .font-cursive { font-family: 'Great Vibes', cursive; }
 
         @media print {
-            body * {
-                visibility: hidden !important;
-            }
+            body * { visibility: hidden !important; }
 
-            ্            /* Marksheet Print (Single A4 Fit Fix) */
             body.print-mode-marksheet #printable-marksheet,
             body.print-mode-marksheet #printable-marksheet * {
                 visibility: visible !important;
@@ -27,18 +24,15 @@
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
-                max-height: 100vh !important;
                 margin: 0 !important;
-                padding: 10mm !important;
+                padding: 8mm !important;
                 box-sizing: border-box !important;
-                background: white !important;
-                transform: scale(0.92);
+                background: #ffffff !important;
+                transform: scale(0.90);
                 transform-origin: top center;
             }
             @page { size: A4 portrait; margin: 0; }
-            
 
-            /* Certificate Print */
             body.print-mode-cert #printable-certificate,
             body.print-mode-cert #printable-certificate * {
                 visibility: visible !important;
@@ -49,15 +43,15 @@
                 top: 0 !important;
                 width: 100vw !important;
                 height: 100vh !important;
-                margin: 0 !important;
                 padding: 12mm !important;
                 box-sizing: border-box !important;
-                background: white !important;
+                border: none !important;
+                background: #ffffff !important;
             }
             body.print-mode-cert { background: white !important; }
             @page { size: A4 landscape; margin: 0; }
         }
-        
+
         .cert-card-preview {
             aspect-ratio: 1.414 / 1; width: 100%; max-width: 750px; background: #fff;
             border: 8px solid #0f172a; outline: 2px solid #cbd5e1; outline-offset: -5px;
@@ -103,8 +97,6 @@
                     <h3 class="text-sm font-bold text-slate-900 uppercase">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</h3>
                     <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
                 </div>
-
-                <div id="msgBanner" class="p-2.5 rounded-xl text-xs font-medium border text-center"></div>
 
                 <div>
                     <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Student Information</h4>
@@ -270,7 +262,7 @@
     </footer>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNQik6qzaIC4iHMovzZ7CZ7SuCXYIj4-odkaTyJnVKypYY6-6st5fXdtyLtbAgzKd_/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIuImTu2Byupi0bx3fnLQwEctukdCO4OLhgX3dynoGiPByfJ7rfm0xAsdnT3KTZV7U/exec";
 
         let currentActiveStudent = null;
 
@@ -328,15 +320,6 @@
                         statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">NOT QUALIFIED</span>`;
                     }
 
-                    const msgBanner = document.getElementById('msgBanner');
-                    if (isQualified) {
-                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center";
-                        msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale.`;
-                    } else {
-                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center";
-                        msgBanner.innerText = `👏 Great effort! Thank you for participating. Download your participation certificate below.`;
-                    }
-
                     const finaleSec = document.getElementById('finaleSection');
                     if (isQualified) {
                         finaleSec.style.display = "block";
@@ -376,16 +359,18 @@
         }
 
         function printMarksheet() {
-            document.body.className = "print-mode-marksheet";
+            document.body.classList.add("print-mode-marksheet");
             window.print();
-            setTimeout(() => { document.body.className = ""; }, 500);
+            setTimeout(() => { document.body.classList.remove("print-mode-marksheet"); }, 1000);
         }
 
         function printCertificate() {
-            document.body.className = "print-mode-cert";
+            document.body.classList.add("print-mode-cert");
             window.print();
-            setTimeout(() => { document.body.className = ""; }, 500);
+            setTimeout(() => { document.body.classList.remove("print-mode-cert"); }, 1000);
         }
     </script>
 </body>
 </html>
+
+             
