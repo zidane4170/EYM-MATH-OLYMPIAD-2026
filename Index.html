@@ -104,6 +104,7 @@
                     <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
                 </div>
 
+                <div id="msgBanner" class="p-2.5 rounded-xl text-xs font-medium border text-center"></div>
 
                 <div>
                     <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Student Information</h4>
@@ -326,8 +327,15 @@
                     } else {
                         statusBadgeEl.innerHTML = `<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">NOT QUALIFIED</span>`;
                     }
-                }
-                
+
+                    const msgBanner = document.getElementById('msgBanner');
+                    if (isQualified) {
+                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-emerald-50 border-emerald-200 text-emerald-800 text-center";
+                        msgBanner.innerText = `🎉 Congratulations! You have successfully qualified for the Grand Finale.`;
+                    } else {
+                        msgBanner.className = "p-2.5 rounded-xl text-xs font-medium border bg-amber-50 border-amber-200 text-amber-800 text-center";
+                        msgBanner.innerText = `👏 Great effort! Thank you for participating. Download your participation certificate below.`;
+                    }
 
                     const finaleSec = document.getElementById('finaleSection');
                     if (isQualified) {
