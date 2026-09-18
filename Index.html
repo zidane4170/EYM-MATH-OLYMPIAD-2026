@@ -2,21 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<!-- This site is hosted on Netlify. Anyone can build and deploy a site
-     like this one for free: https://netlify.new/?utm_campaign=ai-legible&utm_source=comment&utm_medium=referral&utm_id=93c7276c-0e3a-4659-8674-c2822b7c6840
-     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
-<meta name="hosting-provider" content="Netlify">
-<meta name="netlify-deploy" content="https://netlify.new/?utm_campaign=ai-legible&amp;utm_source=meta&amp;utm_medium=referral&amp;utm_id=93c7276c-0e3a-4659-8674-c2822b7c6840">
+    <meta name="hosting-provider" content="Netlify">
+    <meta name="netlify-deploy" content="https://netlify.new/?utm_campaign=ai-legible&amp;utm_source=meta&amp;utm_medium=referral&amp;utm_id=93c7276c-0e3a-4659-8674-c2822b7c6840">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EYM MO26 - Result Portal</title>
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Added Cormorant Garamond Font alongside existing fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Cinzel:wght@700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- HTML2PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         @media print {
             body * { visibility: hidden !important; }
-
             body.print-mode-marksheet #printable-marksheet,
             body.print-mode-marksheet #printable-marksheet * {
                 visibility: visible !important;
@@ -35,6 +36,77 @@
             }
             @page { size: A4 portrait; margin: 0; }
         }
+
+        .cert-font-title { font-family: 'Cinzel', serif; }
+        /* Participant Name font */
+        .cert-font-name { font-family: 'Cormorant Garamond', serif; }
+
+        .cert-preview-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        #cert-render-area {
+            width: 1050px;
+            height: 740px;
+            background: #ffffff;
+            color: #000000;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        .cert-outer-border {
+            border: 14px solid #0f172a;
+            height: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+
+        .cert-middle-border {
+            border: 3px solid #0284c7;
+            height: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .cert-inner-border {
+            border: 2px solid #b45309;
+            height: 100%;
+            padding: 28px 45px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 50%, #fffbebe6 100%);
+        }
+
+        .cert-watermark {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .corner-decoration {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-color: #0284c7;
+        }
+        .corner-tl { top: 10px; left: 10px; border-top: 3px solid; border-left: 3px solid; }
+        .corner-tr { top: 10px; right: 10px; border-top: 3px solid; border-right: 3px solid; }
+        .corner-bl { bottom: 10px; left: 10px; border-bottom: 3px solid; border-left: 3px solid; }
+        .corner-br { bottom: 10px; right: 10px; border-bottom: 3px solid; border-right: 3px solid; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
@@ -66,100 +138,193 @@
             </div>
         </div>
 
-        <!-- Result Card -->
-        <div id="resultCard" class="hidden bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-md">
+        <!-- Result & Certificate Wrapper -->
+        <div id="resultCard" class="hidden space-y-6">
             
-            <div id="printable-marksheet" class="space-y-3">
-                <div class="text-center border-b border-slate-100 pb-2">
-                    <h3 class="text-sm font-bold text-slate-900 uppercase">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</h3>
-                    <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
-                </div>
+            <!-- Official Performance Card (Marksheet) -->
+            <div class="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-md">
+                <div id="printable-marksheet" class="space-y-3">
+                    <div class="text-center border-b border-slate-100 pb-2">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase">EVERY YOUTH MATTERS MATH OLYMPIAD 2026</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Official Performance Card</p>
+                    </div>
 
-                <div>
-                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Student Information</h4>
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
-                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
-                            <span class="text-slate-500">ID No:</span>
-                            <span id="resID" class="font-bold text-slate-900"></span>
+                    <div>
+                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Student Information</h4>
+                        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                                <span class="text-slate-500">ID No:</span>
+                                <span id="resID" class="font-bold text-slate-900"></span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                                <span class="text-slate-500">Name:</span>
+                                <span id="resName" class="font-bold text-slate-900 text-right"></span>
+                            </div>
+                            <div class="flex flex-col border-b border-slate-200/50 pb-1">
+                                <span class="text-slate-500 text-[10px]">Institute:</span>
+                                <span id="resInstitute" class="font-bold text-slate-900"></span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 border-b border-slate-200/50 pb-1">
+                                <div><span class="text-slate-500 block text-[10px]">Class:</span> <span id="resClass" class="font-bold text-slate-900"></span></div>
+                                <div><span class="text-slate-500 block text-[10px]">Section:</span> <span id="resSection" class="font-bold text-slate-900"></span></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><span class="text-slate-500 block text-[10px]">Class Roll:</span> <span id="resRoll" class="font-bold text-slate-900"></span></div>
+                                <div><span class="text-slate-500 block text-[10px]">Contact:</span> <span id="resContact" class="font-bold text-slate-900"></span></div>
+                            </div>
                         </div>
-                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
-                            <span class="text-slate-500">Name:</span>
-                            <span id="resName" class="font-bold text-slate-900 text-right"></span>
+                    </div>
+
+                    <div>
+                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Qualifying Round Information</h4>
+                        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                                <span class="text-slate-500">Ans Sheet No:</span>
+                                <span id="resQSheet" class="font-bold text-slate-900 font-mono"></span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-1 text-center py-1 bg-white rounded-lg border border-slate-200/60 my-1">
+                                <div><span class="text-[9px] text-slate-400 block">Answered</span><span id="resAnswered" class="font-bold text-slate-800"></span></div>
+                                <div><span class="text-[9px] text-slate-400 block">Correct</span><span id="resCorrect" class="font-bold text-emerald-600"></span></div>
+                                <div><span class="text-[9px] text-slate-400 block">Wrong</span><span id="resWrong" class="font-bold text-rose-600"></span></div>
+                                <div><span class="text-[9px] text-slate-400 block">Accuracy</span><span id="resAccuracy" class="font-bold text-cyan-600"></span></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-1 text-center py-1 bg-cyan-50/50 rounded-lg border border-cyan-100 my-1">
+                                <div><span class="text-[9px] text-cyan-700 block font-medium">All Over Rank</span><span id="resAllOverRank" class="font-bold text-slate-900"></span></div>
+                                <div><span class="text-[9px] text-cyan-700 block font-medium">Institute Rank</span><span id="resInstRank" class="font-bold text-slate-900"></span></div>
+                                <div><span class="text-[9px] text-cyan-700 block font-medium">Class Rank</span><span id="resClassRank" class="font-bold text-slate-900"></span></div>
+                            </div>
+
+                            <div class="flex justify-between items-center pt-1">
+                                <div>
+                                    <span class="text-slate-500 text-[10px] block">Status:</span>
+                                    <span id="resStatusBadge" class="inline-flex items-center gap-1 mt-0.5 font-bold text-[11px]"></span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-slate-500 text-[10px] block">Q. Score:</span>
+                                    <span id="resQScore" class="font-bold text-slate-900 text-sm"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex flex-col border-b border-slate-200/50 pb-1">
-                            <span class="text-slate-500 text-[10px]">Institute:</span>
-                            <span id="resInstitute" class="font-bold text-slate-900"></span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 border-b border-slate-200/50 pb-1">
-                            <div><span class="text-slate-500 block text-[10px]">Class:</span> <span id="resClass" class="font-bold text-slate-900"></span></div>
-                            <div><span class="text-slate-500 block text-[10px]">Section:</span> <span id="resSection" class="font-bold text-slate-900"></span></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div><span class="text-slate-500 block text-[10px]">Class Roll:</span> <span id="resRoll" class="font-bold text-slate-900"></span></div>
-                            <div><span class="text-slate-500 block text-[10px]">Contact:</span> <span id="resContact" class="font-bold text-slate-900"></span></div>
+                    </div>
+
+                    <div id="finaleSection">
+                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Finale Information</h4>
+                        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
+                            <div class="flex justify-between border-b border-slate-200/50 pb-1">
+                                <span class="text-slate-500">Finale Ans Sheet No:</span>
+                                <span id="resFSheet" class="font-bold text-slate-900 font-mono"></span>
+                            </div>
+                            <div class="flex justify-between items-center pt-1">
+                                <div>
+                                    <span class="text-slate-500 text-[10px] block">Title / Achievement:</span>
+                                    <span id="resTitle" class="font-extrabold text-purple-600 text-xs"></span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-slate-500 text-[10px] block">Finale Score:</span>
+                                    <span id="resFScore" class="font-extrabold text-slate-900 text-sm"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Qualifying Round Information</h4>
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
-                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
-                            <span class="text-slate-500">Ans Sheet No:</span>
-                            <span id="resQSheet" class="font-bold text-slate-900 font-mono"></span>
-                        </div>
-                        <div class="grid grid-cols-4 gap-1 text-center py-1 bg-white rounded-lg border border-slate-200/60 my-1">
-                            <div><span class="text-[9px] text-slate-400 block">Answered</span><span id="resAnswered" class="font-bold text-slate-800"></span></div>
-                            <div><span class="text-[9px] text-slate-400 block">Correct</span><span id="resCorrect" class="font-bold text-emerald-600"></span></div>
-                            <div><span class="text-[9px] text-slate-400 block">Wrong</span><span id="resWrong" class="font-bold text-rose-600"></span></div>
-                            <div><span class="text-[9px] text-slate-400 block">Accuracy</span><span id="resAccuracy" class="font-bold text-cyan-600"></span></div>
-                        </div>
-                        
-                        <div class="grid grid-cols-3 gap-1 text-center py-1 bg-cyan-50/50 rounded-lg border border-cyan-100 my-1">
-                            <div><span class="text-[9px] text-cyan-700 block font-medium">All Over Rank</span><span id="resAllOverRank" class="font-bold text-slate-900"></span></div>
-                            <div><span class="text-[9px] text-cyan-700 block font-medium">Institute Rank</span><span id="resInstRank" class="font-bold text-slate-900"></span></div>
-                            <div><span class="text-[9px] text-cyan-700 block font-medium">Class Rank</span><span id="resClassRank" class="font-bold text-slate-900"></span></div>
-                        </div>
-
-                        <div class="flex justify-between items-center pt-1">
-                            <div>
-                                <span class="text-slate-500 text-[10px] block">Status:</span>
-                                <span id="resStatusBadge" class="inline-flex items-center gap-1 mt-0.5 font-bold text-[11px]"></span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-slate-500 text-[10px] block">Q. Score:</span>
-                                <span id="resQScore" class="font-bold text-slate-900 text-sm"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="finaleSection">
-                    <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Finale Information</h4>
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-1.5 text-xs">
-                        <div class="flex justify-between border-b border-slate-200/50 pb-1">
-                            <span class="text-slate-500">Finale Ans Sheet No:</span>
-                            <span id="resFSheet" class="font-bold text-slate-900 font-mono"></span>
-                        </div>
-                        <div class="flex justify-between items-center pt-1">
-                            <div>
-                                <span class="text-slate-500 text-[10px] block">Title / Achievement:</span>
-                                <span id="resTitle" class="font-extrabold text-purple-600 text-xs"></span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-slate-500 text-[10px] block">Finale Score:</span>
-                                <span id="resFScore" class="font-extrabold text-slate-900 text-sm"></span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="mt-4 pt-3 border-t border-slate-100">
+                    <button onclick="printMarksheet()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                     Print MarkSheet
+                    </button>
                 </div>
             </div>
 
-            <div class="mt-4 pt-3 border-t border-slate-100">
-                <button onclick="printMarksheet()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                 Print MarkSheet
-                </button>
+            <!-- Certificate Render & Download Section -->
+            <div class="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-5 shadow-md">
+                
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-2 border border-amber-200">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-600 mb-2">Click here to download</p>
+                    <button id="downloadBtn" onclick="downloadCertificatePDF()" class="w-full bg-cyan-700 hover:bg-cyan-800 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-md">
+                        Download Certificate
+                    </button>
+                </div>
+
+                <div class="cert-preview-wrapper">
+                    <div id="cert-render-area">
+                        <div class="cert-outer-border">
+                            <div class="cert-middle-border">
+                                <div class="cert-inner-border">
+                                    
+                                    <!-- Decorative Corners -->
+                                    <div class="corner-decoration corner-tl"></div>
+                                    <div class="corner-decoration corner-tr"></div>
+                                    <div class="corner-decoration corner-bl"></div>
+                                    <div class="corner-decoration corner-br"></div>
+
+                                    <!-- Watermark Logo -->
+                                    <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" alt="Watermark" class="cert-watermark">
+
+                                    <!-- Header -->
+                                    <div class="flex flex-col items-center justify-center pt-1">
+                                        <img src="https://lh3.googleusercontent.com/d/1c3tdbVxweesLdm8u7y2UlbnPPT_oa2A2" alt="EYMO Logo" class="w-16 h-16 object-contain mb-1.5 drop-shadow-sm">
+                                        <h4 class="text-lg font-black text-slate-950 tracking-[0.25em] uppercase">EVERY YOUTH MATTERS</h4>
+                                        <p class="text-sm font-black text-cyan-800 tracking-[0.2em] uppercase mt-0.5">MATH OLYMPIAD</p>
+                                    </div>
+
+                                    <!-- Title Section (Bigger & Clearer Font) -->
+                                    <div class="my-1">
+                                        <h2 class="cert-font-title text-4xl font-black text-amber-900 uppercase tracking-[0.15em] leading-tight">Certificate of Participation</h2>
+                                        <div class="flex items-center justify-center gap-2 my-2">
+                                            <div class="w-16 h-1 bg-cyan-700"></div>
+                                            <div class="w-2.5 h-2.5 rounded-full bg-amber-800"></div>
+                                            <div class="w-16 h-1 bg-cyan-700"></div>
+                                        </div>
+                                        <p class="text-xs font-black text-slate-700 uppercase tracking-[0.25em]">PROUDLY PRESENTED FOR EXCELLENCE & DEDICATION</p>
+                                    </div>
+
+                                    <!-- Participant Section (Bigger & Clearer Upper/Lower Text) -->
+                                    <div class="my-auto px-6 space-y-2">
+                                        <p class="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">THIS CERTIFICATE IS PROUDLY AWARDED TO</p>
+                                        
+                                        <!-- Name Kept Same Size -->
+                                        <div id="certStudentName" class="cert-font-name text-5xl font-bold text-slate-950 border-b-2 border-amber-800 inline-block px-12 py-1 my-1">
+                                            -
+                                        </div>
+
+                                        <p class="text-base font-medium text-slate-900 leading-relaxed max-w-3xl mx-auto pt-2">
+                                            for outstanding performance and successful participation in the <span class="font-bold text-black">Every Youth Matters Math Olympiad 2026</span>. Demonstrated extraordinary analytical ability, critical problem-solving skills, and remarkable enthusiasm in mathematics.
+                                        </p>
+                                    </div>
+
+                                    <!-- Organized By & Founder Signature -->
+                                    <div class="pt-2 border-t-2 border-slate-300 flex justify-between items-end px-6">
+                                        <div class="text-left">
+                                            <p class="text-xs font-black text-slate-600 uppercase tracking-widest">ORGANIZED BY</p>
+                                            <p class="text-base font-black text-slate-950 tracking-wider uppercase mt-0.5">EVERY YOUTH MATTERS</p>
+                                        </div>
+
+                                        <!-- FOUNDER Signature Box -->
+                                        <div class="text-center flex flex-col items-center">
+                                            <div class="h-12 flex items-end justify-center mb-1">
+                                                <img src="https://lh3.googleusercontent.com/d/1jOsufEZxK-vXQaTTbpJqBtEHgklLxZjq" alt="Founder Signature" class="max-h-12 max-w-[140px] object-contain">
+                                            </div>
+                                            <div class="w-40 border-t border-slate-900 pt-0.5">
+                                                <p class="text-xs font-black text-slate-950 uppercase tracking-wider">FOUNDER</p>
+                                                <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest">EVERY YOUTH MATTERS</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </div>
 
         <!-- Error Message -->
@@ -220,8 +385,11 @@
                         resultCard.classList.remove('hidden');
                         errorMsg.classList.add('hidden');
 
-                        document.getElementById('resID').innerText = getSheetValue(data, ["ID", "id"]);
-                        document.getElementById('resName').innerText = getSheetValue(data, ["NAME", "Name", "Student Name"]);
+                        const studentId = getSheetValue(data, ["ID", "id"]);
+                        const studentName = getSheetValue(data, ["NAME", "Name", "Student Name"]);
+
+                        document.getElementById('resID').innerText = studentId;
+                        document.getElementById('resName').innerText = studentName;
                         document.getElementById('resInstitute').innerText = getSheetValue(data, ["INSTITUTE", "Institute", "School"]);
                         document.getElementById('resClass').innerText = getSheetValue(data, ["CLASS", "Class"]);
                         document.getElementById('resSection').innerText = getSheetValue(data, ["SECTION", "Section"]);
@@ -238,6 +406,8 @@
                         document.getElementById('resAllOverRank').innerText = getSheetValue(data, ["OVER RAN", "ALL OVER RANK", "OVERALL RANK"]);
                         document.getElementById('resInstRank').innerText = getSheetValue(data, ["INSTITUTE RAN", "INSTITUTE RANKING", "INSTITUTE RANK"]);
                         document.getElementById('resClassRank').innerText = getSheetValue(data, ["CLASS RANKIN", "CLASS RANKING", "CLASS RANK"]);
+
+                        document.getElementById('certStudentName').innerText = studentName;
 
                         const statusBadgeEl = document.getElementById('resStatusBadge');
                         const statusVal = String(getSheetValue(data, ["STATUS", "Status"], "")).toUpperCase();
@@ -274,6 +444,32 @@
             document.body.classList.add("print-mode-marksheet");
             window.print();
             setTimeout(() => { document.body.classList.remove("print-mode-marksheet"); }, 1000);
+        }
+
+        function downloadCertificatePDF() {
+            const element = document.getElementById('cert-render-area');
+            const studentName = document.getElementById('certStudentName').innerText.trim() || 'Student';
+            const btn = document.getElementById('downloadBtn');
+
+            btn.innerText = "⏳ Generating Certificate PDF...";
+            btn.disabled = true;
+
+            const options = {
+                margin:       0,
+                filename:     `Certificate_${studentName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
+                jsPDF:        { unit: 'px', format: [1050, 740], orientation: 'landscape' }
+            };
+
+            html2pdf().set(options).from(element).save().then(() => {
+                btn.innerText = "Download Certificate";
+                btn.disabled = false;
+            }).catch(err => {
+                btn.innerText = "Download Certificate";
+                btn.disabled = false;
+                alert("PDF generation failed! Try again.");
+            });
         }
     </script>
 </body>
